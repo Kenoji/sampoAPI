@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+  db:
+    image: postgres
+    volumes:
+      - database:/var/lib/postgresql/data
+    env_file:
+      - ./.env.db.dev
+  web:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && bundle install && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    volumes:
+      - .:/usr/local/src
+    env_file:
+      - ./.env.dev
+    ports:
+      - "3333:3000"
+    depends_on:
+      - db
+volumes:
+  database:
